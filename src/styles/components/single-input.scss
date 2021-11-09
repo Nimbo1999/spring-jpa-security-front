@@ -1,0 +1,44 @@
+.single-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: $border-radius;
+
+    input {
+        border: 2px solid $light-grey;
+        color: $text-paragraph;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 28px;
+        padding: $base-unit calc($base-unit * 2);
+        outline-color: $primary-color;
+    
+        &::placeholder {
+            color: rgba($text-paragraph, .8);
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: $base-unit;
+        background-color: $color-red;
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+
+        li {
+            color: $white;
+            font-weight: 500;
+        }
+    }
+
+    &.error {
+        border: 1px solid $color-red;
+        input {
+            border: 2px solid $color-red;
+            outline: none;
+
+            &::placeholder {
+                color: rgba($color-red, .8);
+            }
+        }
+    }
+}

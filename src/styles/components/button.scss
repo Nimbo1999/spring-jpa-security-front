@@ -1,0 +1,18 @@
+button {
+    border: 2px solid;
+    border-radius: $border-radius;
+    color: $text-paragraph;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 28px;
+    padding: $base-unit calc($base-unit * 2);
+    outline-color: $primary-color;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+
+    &.primary {
+        background-color: $primary-color;
+        color: white;
+        border-color: $primary-color;
+    }
+}
