@@ -1,4 +1,4 @@
-import HttpRequestError from '../exceptions/HttpRequestError';
+import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
 import LOCAL_STORAGE_KEYS from '../constants/LocalStorageKeys';
 
 class HttpService {
@@ -7,10 +7,15 @@ class HttpService {
         const response = await fetch(url, { method: 'GET', headers: HttpService.defaultHeaders() });
 
         if (HttpService.hasValidStatusCode(response.status)) {
+            if (HttpService.hasRequestStatusError(response)) {
+                const content = await response.json() as HttpRequestErrorContent;
+                throw new HttpRequestError(`HTTP GET request failed to ${url}`, content);
+            }
+
             return await response.json() as Response;
         }
 
-        throw new HttpRequestError(`HTTP GET request failed to ${url}`, response.status);
+        throw new HttpRequestError('Invalid response status code');
     }
 
     public static async post<Response>(url: string, payload?: any): Promise<Response> {
@@ -21,10 +26,15 @@ class HttpService {
         });
 
         if (HttpService.hasValidStatusCode(response.status)) {
+            if (HttpService.hasRequestStatusError(response)) {
+                const content = await response.json() as HttpRequestErrorContent;
+                throw new HttpRequestError(`HTTP POST request failed to ${url}`, content);
+            }
+
             return await response.json() as Response;
         }
 
-        throw new HttpRequestError(`HTTP POST request failed to ${url}`, response.status);
+        throw new HttpRequestError('Invalid response status code');
     }
 
     public static async put<Response>(url: string, payload?: any): Promise<Response> {
@@ -35,10 +45,15 @@ class HttpService {
         });
 
         if (HttpService.hasValidStatusCode(response.status)) {
+            if (HttpService.hasRequestStatusError(response)) {
+                const content = await response.json() as HttpRequestErrorContent;
+                throw new HttpRequestError(`HTTP PUT request failed to ${url}`, content);
+            }
+
             return await response.json() as Response;
         }
 
-        throw new HttpRequestError(`HTTP PUT request failed to ${url}`, response.status);
+        throw new HttpRequestError('Invalid response status code');
     }
 
     public static async delete<Response>(url: string): Promise<Response> {
@@ -48,10 +63,15 @@ class HttpService {
         });
 
         if (HttpService.hasValidStatusCode(response.status)) {
+            if (HttpService.hasRequestStatusError(response)) {
+                const content = await response.json() as HttpRequestErrorContent;
+                throw new HttpRequestError(`HTTP DELETE request failed to ${url}`, content);
+            }
+
             return await response.json() as Response;
         }
 
-        throw new HttpRequestError(`HTTP DELETE request failed to ${url}`, response.status);
+        throw new HttpRequestError('Invalid response status code');
     }
 
     private static defaultHeaders(): Headers {
@@ -65,8 +85,13 @@ class HttpService {
     }
 
     private static hasValidStatusCode(status: number): boolean {
-        const acceptedStatusCodeValues = [200, 201, 202, 204];
+        const acceptedStatusCodeValues = [200, 201, 202, 204, 400, 401, 403, 404, 500];
         return acceptedStatusCodeValues.includes(status);
+    }
+
+    private static hasRequestStatusError(response: Response) {
+        const httpStatusError = [400, 401, 403, 404, 500];
+        return httpStatusError.includes(response.status);
     }
 
 }

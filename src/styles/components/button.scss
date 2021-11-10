@@ -1,18 +1,56 @@
 button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     border: 2px solid;
     border-radius: $border-radius;
+    outline-color: $primary-color;
     color: $text-paragraph;
+
+    padding: $base-unit calc($base-unit * 2);
+
     font-size: 1rem;
     font-weight: 500;
     line-height: 28px;
-    padding: $base-unit calc($base-unit * 2);
-    outline-color: $primary-color;
     text-transform: uppercase;
     letter-spacing: .6px;
+    
+    cursor: pointer;
+    transition:
+        border-color 200ms ease-in,
+        background-color 200ms ease-in;
 
     &.primary {
-        background-color: $primary-color;
+        background-color: rgba($primary-color, .9);
         color: white;
+        border-color: transparent;
+
+        &:disabled {
+            border-color: transparent;
+            background-color: rgba($primary-color, .8);
+            cursor: default;
+        }
+    }
+
+    &:hover {
         border-color: $primary-color;
+        background-color: $primary-color;
+    }
+
+    .button-loading {
+        width: 100%;
+        overflow: hidden;
+        max-width: 0px;
+        transition:
+            max-width 200ms ease-out,
+            margin-left 200ms ease-out;
+    }
+
+    &.loading {
+        .button-loading {
+            max-width: calc($base-unit * 3);
+            margin-left: calc($base-unit * 2);
+        }
     }
 }

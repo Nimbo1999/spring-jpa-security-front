@@ -3,3 +3,8 @@ export interface AuthSuccessResponse {
     tokenType: string;
     expiresIn: number;
 }
+
+export interface ErrorState {
+    username: string[],
+    password: string[]
+}
