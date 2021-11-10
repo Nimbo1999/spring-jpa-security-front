@@ -20,7 +20,17 @@
             background-color: $white;
             padding: calc($base-unit * 2) calc($base-unit * 3);
 
-            overflow: scroll;
+            overflow: auto;
+
+            header.section-header {
+                display: flex;
+                flex-direction: column;
+                row-gap: calc($base-unit);
+
+                h3 {
+                    color: $text-title;
+                }
+            }
 
             @media screen and (min-width: $break-lg) {
                 padding: calc($base-unit * 4);
