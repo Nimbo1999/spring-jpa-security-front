@@ -1,0 +1,11 @@
+header.page-header {
+    display: flex;
+    align-items: center;
+    background-color: $primary-color;
+    padding: calc($base-unit * 2) calc($base-unit * 4);
+
+    h2 {
+        color: $white;
+        flex: 1;
+    }
+}

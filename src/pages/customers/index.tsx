@@ -2,14 +2,27 @@ import { FC } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
+import PageHeader from '../../components/pageHeader/PageHeader';
+import CustomerTable from '../../components/customersTable/CustomerTable';
+
 import RouteConstants from '../../constants/RoutesConstants';
 
 const CustomersPage: FC = () => {
     return (
-        <div>
+        <div className="customers-page">
             <Head>
                 <title>Customers</title>
             </Head>
+
+            <PageHeader />
+
+            <section>
+                <div className="side-bar" />
+
+                <main>
+                    <CustomerTable />
+                </main>
+            </section>
         </div>
     );
 }

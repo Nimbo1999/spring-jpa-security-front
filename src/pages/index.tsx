@@ -1,23 +1,33 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 import RouteConstants from '../constants/RoutesConstants';
 
-const Home: FC = () => {
-    const { replace } = useRouter();
+import { GetServerSideProps } from 'next';
 
-    useEffect(() => {
-        replace(RouteConstants.LOGIN);
-    });
+const Home: FC = () => (
+    <div>
+        <Head>
+            <title>Home page</title>
+        </Head>
+    </div>
+);
 
-    return (
-        <div>
-            <Head>
-                <title>Home page</title>
-            </Head>
-        </div>
-    );
-};
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+    const isAuthenticated = Boolean(req.cookies && req.cookies['app-cookie']);
+
+    return isAuthenticated
+    ? ({
+        redirect: {
+            destination: RouteConstants.CUSTOMERS,
+            permanent: false
+        }
+    }) : ({
+        redirect: {
+            destination: RouteConstants.LOGIN,
+            permanent: false
+        }
+    })
+}
 
 export default Home;

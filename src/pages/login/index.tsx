@@ -14,6 +14,7 @@ import API_ROUTES from '../../constants/ApiRoutes';
 
 import type { AuthSuccessResponse, ErrorState } from './login.types';
 import RouteConstants from '../../constants/RoutesConstants';
+import { GetServerSideProps } from 'next';
 
 const Login: FC = () => {
     const router = useRouter();
@@ -122,6 +123,20 @@ const Login: FC = () => {
             </section>
         </div>
     );
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+    const isAuthenticated = Boolean(req.cookies && req.cookies['app-cookie']);
+
+    return isAuthenticated
+    ? ({
+        props: {}
+    }) : ({
+        redirect: {
+            destination: RouteConstants.LOGIN,
+            permanent: false
+        }
+    })
 }
 
 export default Login;

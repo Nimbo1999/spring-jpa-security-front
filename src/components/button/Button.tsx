@@ -14,9 +14,6 @@ const Button: FC<ButtonProps> = ({ children, variant = 'primary', type = 'button
             <div className="button-loading">
                 <Loader size="small" color={variant === 'primary' ? 'white' : 'primary'} />
             </div>
-            {/* {loading && (
-                <Loader size="small" color={variant === 'primary' ? 'white' : 'primary'} />
-            )} */}
         </button>
     );
 }
