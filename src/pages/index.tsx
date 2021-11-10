@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     return isAuthenticated
     ? ({
         redirect: {
-            destination: RouteConstants.CUSTOMERS,
+            destination: RouteConstants.CUSTOMERS.ROOT,
             permanent: false
         }
     }) : ({

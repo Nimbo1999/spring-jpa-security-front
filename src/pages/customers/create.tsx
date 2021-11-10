@@ -4,6 +4,8 @@ import Head from 'next/head';
 
 import CreateCustomerForm from '../../components/createCustomerForm/CreateCustomerForm';
 
+import CreateCustomerContext from '../../context/CreateCustomerContext';
+
 import RouteConstants from '../../constants/RoutesConstants';
 import PageHeader from '../../components/pageHeader/PageHeader';
 
@@ -20,12 +22,11 @@ const CreateCustomer: FC = () => {
                 <div className="side-bar" />
 
                 <main>
-                    <header className="section-header">
-                        <h3>Adicionar cliente</h3>
-                        <hr />
-                    </header>
+                    <h2>Cadastro de cliente</h2>
 
-                    <CreateCustomerForm />
+                    <CreateCustomerContext>
+                        <CreateCustomerForm />
+                    </CreateCustomerContext>
                 </main>
             </section>
         </div>

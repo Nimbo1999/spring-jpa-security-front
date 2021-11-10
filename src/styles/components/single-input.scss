@@ -1,10 +1,10 @@
 .single-input-wrapper {
     display: flex;
     flex-direction: column;
-    border-radius: $border-radius;
 
     input {
         border: 2px solid $light-grey;
+        border-radius: $border-radius;
         color: $text-paragraph;
         font-size: 1rem;
         font-weight: 500;

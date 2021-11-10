@@ -22,14 +22,9 @@
 
             overflow: auto;
 
-            header.section-header {
-                display: flex;
-                flex-direction: column;
-                row-gap: calc($base-unit);
-
-                h3 {
-                    color: $text-title;
-                }
+            h2 {
+                margin-bottom: calc($base-unit * 2);
+                color: $primary-color;
             }
 
             @media screen and (min-width: $break-lg) {

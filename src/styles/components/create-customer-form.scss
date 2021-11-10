@@ -1,0 +1,5 @@
+form.customer-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: calc($base-unit * 2);
+}

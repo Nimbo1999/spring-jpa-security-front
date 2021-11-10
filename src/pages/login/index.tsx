@@ -26,7 +26,7 @@ const Login: FC = () => {
 
     useEffect(() => {
         const cookie = CookieService.getCookie();
-        if (cookie) router.push(RouteConstants.CUSTOMERS);
+        if (cookie) router.push(RouteConstants.CUSTOMERS.ROOT);
     }, [loading]);
 
     const handleHttpResponseError = (err: HttpRequestError): void => {
@@ -130,12 +130,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
     return isAuthenticated
     ? ({
-        props: {}
-    }) : ({
         redirect: {
-            destination: RouteConstants.LOGIN,
+            destination: RouteConstants.CUSTOMERS.ROOT,
             permanent: false
         }
+    }) : ({
+        props: {}
     })
 }
 

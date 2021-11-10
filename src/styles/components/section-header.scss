@@ -1,0 +1,9 @@
+header.section-header {
+    display: flex;
+    flex-direction: column;
+    row-gap: calc($base-unit);
+
+    h3 {
+        color: $text-title;
+    }
+}
