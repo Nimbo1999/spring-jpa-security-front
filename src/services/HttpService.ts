@@ -1,5 +1,5 @@
 import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
-import LOCAL_STORAGE_KEYS from '../constants/LocalStorageKeys';
+import CookieService from './CookieService';
 
 class HttpService {
 
@@ -76,10 +76,11 @@ class HttpService {
 
     private static defaultHeaders(): Headers {
         const headers = new Headers({ 'Content-Type': 'application/json' });
-        const accessToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-        const tokenType = localStorage.getItem(LOCAL_STORAGE_KEYS.TOKEN_TYPE);
-        if (accessToken && tokenType) {
-            headers.append('Authorization', `${tokenType} ${accessToken}`);
+        
+        const authCookie = CookieService.getCookie();
+
+        if (authCookie) {
+            headers.append('Authorization', `${authCookie.tokenType} ${authCookie.accessToken}`);
         }
         return headers;
     }

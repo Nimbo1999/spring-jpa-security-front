@@ -1,23 +1,32 @@
-import { FC, FormEventHandler, useState } from 'react';
+import { FC, FormEventHandler, useState, useEffect } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import SingleInput from '../../components/input/SingleInput';
 import Button from '../../components/button/Button';
 
 import HttpService from '../../services/HttpService';
-import HttpRequestError, { FormErrors } from '../../exceptions/HttpRequestError'
+import CookieService from '../../services/CookieService';
+
+import HttpRequestError, { FormErrors } from '../../exceptions/HttpRequestError';
 
 import API_ROUTES from '../../constants/ApiRoutes';
-import LOCAL_STORAGE_KEYS from '../../constants/LocalStorageKeys';
 
 import type { AuthSuccessResponse, ErrorState } from './login.types';
+import RouteConstants from '../../constants/RoutesConstants';
 
 const Login: FC = () => {
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<ErrorState>({
         username: [],
         password: []
     });
+
+    useEffect(() => {
+        const cookie = CookieService.getCookie();
+        if (cookie) router.push(RouteConstants.CUSTOMERS);
+    }, [loading]);
 
     const handleHttpResponseError = (err: HttpRequestError): void => {
         if (err.payload && err.payload.status !== 403) {
@@ -50,9 +59,7 @@ const Login: FC = () => {
         const url = API_ROUTES.BASE_URL + API_ROUTES.V1 + API_ROUTES.AUTH;
         try {
             const response = await HttpService.post<AuthSuccessResponse>(url, payload);
-            localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, response.accessToken);
-            localStorage.setItem(LOCAL_STORAGE_KEYS.EXPIRES_IN, new Date(response.expiresIn * 1000).toISOString());
-            localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN_TYPE, response.tokenType);
+            CookieService.setCookie(response);
             setLoading(false);
         } catch (err) {
             if (err instanceof HttpRequestError) {
