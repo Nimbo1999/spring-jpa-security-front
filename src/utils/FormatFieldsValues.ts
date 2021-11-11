@@ -12,7 +12,7 @@ class FormatFieldsValues {
             .replace(/(-\d{3})\d+?$/, '$1');
     }
 
-    public static phoneNumber(value:string) {
+    public static phones(value:string) {
         return value.replace(/\D/g, '')
             .replace(/(\d{2})(\d)/, '($1) $2')
             .replace(/(\d{4})(\d)/, '$1-$2')
@@ -44,7 +44,7 @@ class FormatFieldsValues {
         return value;
     }
 
-    public static email(value:string) {
+    public static emails(value:string) {
         return value;
     }
 }

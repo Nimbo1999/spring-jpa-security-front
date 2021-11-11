@@ -1,5 +1,6 @@
 import { ChangeEventHandler, FC, useState } from 'react';
 import validator from 'validator';
+import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 
 import FormatFieldsValues, { Fields } from '../../utils/FormatFieldsValues';
 import Button from '../button/Button';
@@ -8,6 +9,8 @@ import SingleInput from '../input/SingleInput';
 import type { AddEmailComponentProps } from './AddEmailComponent.types';
 
 const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailList = [], onRemoveEmail }) => {
+    const { errors, onBlurField } = useCreateCustomerContext();
+
     const [isAddingEmail, setIsAddingEmail] = useState(false);
     const [email, setEmail] = useState('');
 
@@ -29,7 +32,11 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
     }
 
     const emailDisabled = !validator.isEmail(email);
-    const emailErrors = emailDisabled && email ? [ 'Informe um email válido' ] : [];
+    const emailErrors = errors && errors['emails']
+        ? errors['emails']
+        : emailDisabled && email
+            ? ['Informe um email válido']
+            : [];
 
     return (
         <div className="add-phone-number-component">
@@ -53,17 +60,18 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
             ) : (
                 <section className="new-number-content">
                     <SingleInput
-                        id="email"
-                        name="email"
+                        id="emails"
+                        name="emails"
                         type="text"
                         placeholder="Email"
                         value={email}
                         errors={emailErrors}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                     />
 
                     <div className="action-buttons">
-                        <Button type="button" onClick={onClickCancel}>-</Button>
+                        <Button type="button" onClick={onClickCancel} variant="danger">-</Button>
 
                         <Button
                             type="button"

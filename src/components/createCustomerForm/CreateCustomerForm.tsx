@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 import Button from '../button/Button';
@@ -9,6 +10,7 @@ import AddEmailComponent from './AddEmailComponent';
 import AddPhoneNumberComponent from './AddPhoneNumberComponent';
 
 const CreateCustomerForm: FC = () => {
+    const route = useRouter();
     const {
         onChangeInput,
         getAddressByPostalCode,
@@ -16,6 +18,9 @@ const CreateCustomerForm: FC = () => {
         onRemovePhone,
         onConfirmEmail,
         onRemoveEmail,
+        onSubmit,
+        onBlurField,
+        hasFormErrors,
         address: {
             postalCode,
             city,
@@ -29,11 +34,12 @@ const CreateCustomerForm: FC = () => {
         cepFetched,
         phones,
         emails,
-        loading
+        loading,
+        errors
     } = useCreateCustomerContext();
 
     return (
-        <form method="POST" className="customer-form">
+        <form method="POST" className="customer-form" onSubmit={onSubmit}>
             <SectionHeader>
                 Dados do cliente
             </SectionHeader>
@@ -44,8 +50,9 @@ const CreateCustomerForm: FC = () => {
                 type="text"
                 placeholder="Nome completo"
                 value={name}
-                errors={[]}
+                errors={errors && errors['name'] ? errors['name'] : []}
                 onChange={onChangeInput}
+                onBlur={onBlurField}
             />
 
             <SingleInput
@@ -54,8 +61,9 @@ const CreateCustomerForm: FC = () => {
                 type="text"
                 placeholder="CPF"
                 value={cpf}
-                errors={[]}
+                errors={errors && errors['cpf'] ? errors['cpf'] : []}
                 onChange={onChangeInput}
+                onBlur={onBlurField}
             />
 
             <SectionHeader>
@@ -69,7 +77,7 @@ const CreateCustomerForm: FC = () => {
                     type="text"
                     placeholder="Código postal"
                     value={postalCode}
-                    errors={[]}
+                    errors={errors && errors['address.postalCode'] ? errors['address.postalCode'] : []}
                     onChange={onChangeInput}
                     onBlur={getAddressByPostalCode}
                 />
@@ -85,8 +93,9 @@ const CreateCustomerForm: FC = () => {
                         type="text"
                         placeholder="Cidade"
                         value={city}
-                        errors={[]}
+                        errors={errors && errors['address.city'] ? errors['address.city'] : []}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                         disabled={!cepFetched}
                     />
 
@@ -96,8 +105,9 @@ const CreateCustomerForm: FC = () => {
                         type="text"
                         placeholder="Bairro"
                         value={neighborhood}
-                        errors={[]}
+                        errors={errors && errors['address.neighborhood'] ? errors['address.neighborhood'] : []}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                         disabled={!cepFetched}
                     />
 
@@ -107,8 +117,9 @@ const CreateCustomerForm: FC = () => {
                         type="text"
                         placeholder="Logradouro"
                         value={publicPlace}
-                        errors={[]}
+                        errors={errors && errors['address.publicPlace'] ? errors['address.publicPlace'] : []}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                         disabled={!cepFetched}
                     />
 
@@ -118,8 +129,9 @@ const CreateCustomerForm: FC = () => {
                         type="text"
                         placeholder="UF"
                         value={uf}
-                        errors={[]}
+                        errors={errors && errors['address.uf'] ? errors['address.uf'] : []}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                         disabled={!cepFetched}
                     />
 
@@ -129,8 +141,8 @@ const CreateCustomerForm: FC = () => {
                         type="text"
                         placeholder="Complemento"
                         value={complement}
-                        errors={[]}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                         disabled={!cepFetched}
                     />
                 </>
@@ -150,9 +162,13 @@ const CreateCustomerForm: FC = () => {
                 />
             </div>
 
+            {hasFormErrors() && (
+                <span className="form-erros">O formulário possui erros!</span>
+            )}
+
             <footer>
-                <Button type="button">Voltar</Button>
-                <Button type="submit">Confirmar</Button>
+                <Button type="button" variant="ghost" onClick={route.back}>Voltar</Button>
+                <Button type="submit" variant="success">Confirmar</Button>
             </footer>
         </form>
     );

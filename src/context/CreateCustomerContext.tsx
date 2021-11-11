@@ -1,4 +1,5 @@
-import { FC, createContext, useContext, useReducer, ChangeEventHandler } from 'react';
+import { FC, createContext, useContext, useReducer, ChangeEventHandler, FormEventHandler, useState, FocusEvent } from 'react';
+import { useRouter } from 'next/router';
 
 import createCustomerReducer, { initialState } from './reducers/CreateCustomer.reducer';
 
@@ -7,6 +8,9 @@ import API_ROUTES from '../constants/ApiRoutes';
 import HttpService from '../services/HttpService';
 import { CustomerForm, PhoneNumberForm } from './reducers/CreateCustomerReducer.types';
 import FormatFieldsValues, { Fields } from '../utils/FormatFieldsValues';
+import Customer from '../models/Customer';
+import RouteConstants from '../constants/RoutesConstants';
+import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
 
 const CreateCustomerContext = createContext<CreateCustomerContextProps>({
     address: null,
@@ -21,13 +25,34 @@ const CreateCustomerContext = createContext<CreateCustomerContextProps>({
     onRemovePhone: null,
     onConfirmEmail: null,
     onRemoveEmail: null,
-    loading: false
+    loading: false,
+    onSubmit: null,
+    errors: null,
+    onBlurField: null,
+    hasFormErrors: null
 });
 
 const CreateCustomerContextProvider: FC = ({ children }) => {
+    const router = useRouter();
+    const [errors, setErrors] = useState<object>({});
     const [state, dispatch] = useReducer(createCustomerReducer, initialState);
 
-    const getAddressByPostalCode = async () => {
+    const onBlurField = (event: FocusEvent<HTMLInputElement>) => {
+        if (errors && errors[event.target.name]) {
+            setErrors({ ...errors, [event.target.name]: [] });
+        }
+    }
+
+    const hasFormErrors = () => Object.keys(errors).length
+        ? Object.values(errors).every(errorMessages =>
+            Boolean(errorMessages && errorMessages.length))
+        : false;
+
+    hasFormErrors();
+
+    const getAddressByPostalCode = async (event: FocusEvent<HTMLInputElement>) => {
+        onBlurField(event);
+
         if (state.address.postalCode.replace(/\D/g, '').length === 8) {
             dispatch({ type: 'VIACEP_PAYLOAD_ACTION_STARTED', payload: null });
             const url = API_ROUTES.THIRD_PARTY.VIACEP_URL(state.address.postalCode);
@@ -83,6 +108,47 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
         return dispatch({ type: 'UPDATE_STATE', payload: newState });
     }
 
+    const getFormPayload = (): Customer => {
+        return {
+            id: null,
+            name: state.name,
+            cpf: state.cpf,
+            address: {
+                id: null,
+                ...state.address
+            },
+            emails: [...state.emails].map(email => ({ id: null, email })),
+            phones: [...state.phones].map(({ number, type }) => ({ id: null, number, type }))
+        }
+    }
+
+    const handleOnSubmitError = (payload: HttpRequestErrorContent) => {
+        const { content } = payload;
+        if (content && content['errors'] && typeof content['errors'] === 'object') {
+            const errors: object = {};
+            for(const iterator of content['errors']) {
+                errors[iterator['field']] = iterator['messages'];
+            }
+            setErrors(errors);
+        }
+    }
+
+    const onSubmit: FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
+        event.preventDefault();
+        const url = API_ROUTES.BASE_URL +
+            API_ROUTES.V1 +
+            API_ROUTES.CUSTOMER;
+
+        try {
+            await HttpService.post(url, getFormPayload());
+            router.push(RouteConstants.CUSTOMERS.ROOT);
+        } catch(err) {
+            if (err instanceof HttpRequestError && err.payload) {
+                handleOnSubmitError(err.payload);
+            } 
+        }
+    }
+
     return (
         <CreateCustomerContext.Provider value={{
             ...state,
@@ -91,7 +157,11 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
             onConfirmPhone,
             onRemovePhone,
             onConfirmEmail,
-            onRemoveEmail
+            onRemoveEmail,
+            onSubmit,
+            errors,
+            onBlurField,
+            hasFormErrors
         }}>
             {children}
         </CreateCustomerContext.Provider>

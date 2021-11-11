@@ -31,11 +31,62 @@ button.app-button {
             background-color: rgba($primary-color, .8);
             cursor: default;
         }
+
+        &:hover {
+            border-color: $primary-color;
+            background-color: $primary-color;
+        }
     }
 
-    &:hover {
-        border-color: $primary-color;
-        background-color: $primary-color;
+    &.danger {
+        background-color: rgba($color-red, .9);
+        color: white;
+        border-color: transparent;
+
+        &:disabled {
+            border-color: transparent;
+            background-color: rgba($color-red, .8);
+            cursor: default;
+        }
+
+        &:hover {
+            border-color: $color-red;
+            background-color: $color-red;
+        }
+    }
+
+    &.success {
+        background-color: rgba($color-green, .9);
+        color: white;
+        border-color: transparent;
+
+        &:disabled {
+            border-color: transparent;
+            background-color: rgba($color-green, .8);
+            cursor: default;
+        }
+
+        &:hover {
+            border-color: $color-green;
+            background-color: $color-green;
+        }
+    }
+
+    &.ghost {
+        background-color: transparent;
+        color: $text-title;
+        border-color: $text-title;
+
+        &:disabled {
+            border-color: rgba($text-title, .8);
+            background-color: transparent;
+            cursor: default;
+        }
+
+        &:hover {
+            border-color: $text-title;
+            background-color: transparent;
+        }
     }
 
     .button-loading {

@@ -1,5 +1,6 @@
 import { ChangeEventHandler, FC, useState } from 'react';
 import validator from 'validator';
+import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 
 import { PhoneType } from '../../models/PhoneNumber';
 import FormatFieldsValues, { Fields } from '../../utils/FormatFieldsValues';
@@ -17,6 +18,8 @@ const phoneNumberOptLabel = {
 }
 
 const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPhone, phoneList = [], onRemovePhone }) => {
+    const { errors, onBlurField } = useCreateCustomerContext();
+
     const [isAddingPhoneNumber, setIsAddingPhoneNumber] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneType, setPhoneNumberType] = useState<PhoneType>('CELL_PHONE');
@@ -45,7 +48,11 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
     }
 
     const phoneNumberDisabled = phoneNumber.replace(/\D/g, '').length < 10;
-    const phoneNumberErrors = phoneNumberDisabled && phoneNumber ? ['Informe um número de telefone válido'] : []; 
+    const phoneNumberErrors =   errors && errors['phones']
+        ? errors['phones']
+        : phoneNumberDisabled && phoneNumber
+            ? ['Informe um número de telefone válido']
+            : [];
 
     return (
         <div className="add-phone-number-component">
@@ -69,13 +76,14 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
             ) : (
                 <section className="new-number-content">
                     <SingleInput
-                        id="phoneNumber"
-                        name="phoneNumber"
+                        id="phones"
+                        name="phones"
                         type="text"
                         placeholder="Número"
                         value={phoneNumber}
                         errors={phoneNumberErrors}
                         onChange={onChangeInput}
+                        onBlur={onBlurField}
                     />
 
                     <SingleSelect
@@ -86,7 +94,7 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
                     />
 
                     <div className="action-buttons">
-                        <Button type="button" onClick={onClickCancel}>-</Button>
+                        <Button type="button" onClick={onClickCancel} variant="danger">-</Button>
 
                         <Button
                             type="button"

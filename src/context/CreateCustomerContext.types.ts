@@ -1,13 +1,17 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, FocusEvent, FormEventHandler } from 'react';
 import type { CustomerForm, PhoneNumberForm } from './reducers/CreateCustomerReducer.types';
 
 export interface CreateCustomerContextProps extends CustomerForm {
-    getAddressByPostalCode: () => void;
+    getAddressByPostalCode: (event: FocusEvent<HTMLInputElement>) => void;
     onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
     onConfirmPhone: (phone:PhoneNumberForm) => void;
     onRemovePhone: (number: string) => void,
     onConfirmEmail: (email: string) => void,
     onRemoveEmail: (email: string) => void,
+    onSubmit: FormEventHandler<HTMLFormElement>,
+    onBlurField: (event: FocusEvent<HTMLInputElement>) => void,
+    hasFormErrors: () => boolean,
+    errors: object
 }
 
 export interface ViaCepResponse {
