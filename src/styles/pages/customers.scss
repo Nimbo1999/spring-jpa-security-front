@@ -33,5 +33,10 @@
                 box-shadow: -2px -2px 8px 1px rgba($text-title, 0.2);
             }
         }
+
+        .action-buttons {
+            display: flex;
+            gap: $base-unit;
+        }
     }
 }

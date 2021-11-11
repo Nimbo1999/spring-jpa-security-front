@@ -4,6 +4,9 @@ import { useRouter } from 'next/router';
 
 import Button from '../button/Button';
 
+import Delete from '../../assets/icons/Delete';
+import EditDocument from '../../assets/icons/EditDocument';
+
 import { useCustomerContext } from '../../context/CustomersContext';
 import RouteConstants from '../../constants/RoutesConstants';
 
@@ -43,11 +46,17 @@ const CustomerTable: FC = () => {
         {
             id: 'id',
             name: 'Açôes',
-            cell: row => {
+            cell: ({ id }) => {
                 return (
-                    <Button>
-                        editar
-                    </Button>
+                    <div className="action-buttons">
+                        <Button type="button" variant="danger">
+                            <Delete />
+                        </Button>
+
+                        <Button type="button">
+                            <EditDocument />
+                        </Button>
+                    </div>
                 );
             }
         }
