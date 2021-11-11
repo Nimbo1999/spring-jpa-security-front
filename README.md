@@ -1,14 +1,11 @@
-# Configurando o projeto:
-Para rodar localmente siga os passos:
-
-## Requisitos
+# Requisitos
 1- Possuir o node v12@latest ou maior;<br>
 2- possuir o projeto https://github.com/Nimbo1999/spring-boot-jpa-security rodando em sua máquina.<br>
 3- possuir a variável de ambiente NEXT_PUBLIC_API_BASE_URL configurada.
 
-<hr>
+<hr><br>
 
-## instalando e rodando localmente
+# instalando e rodando localmente
 
 1 - Adicione a variável de ambiente NEXT_PUBLIC_API_BASE_URL criando um arquivo .env.local na pasta raiz do projeto com o valor: http://localhost:8080 para utilizarmos como a base url do backend<br><br>
 Exemplo: ```NEXT_PUBLIC_API_BASE_URL=http://localhost:8080```<br><br>
