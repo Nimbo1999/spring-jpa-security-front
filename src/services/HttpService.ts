@@ -77,6 +77,10 @@ class HttpService {
             headers: HttpService.defaultHeaders()
         });
 
+        if (response.ok) {
+            return null;
+        }
+
         if (HttpService.hasValidStatusCode(response.status)) {
             if (HttpService.hasRequestStatusError(response)) {
                 const content = await response.json() as HttpRequestErrorContent;

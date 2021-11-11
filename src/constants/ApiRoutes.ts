@@ -8,7 +8,8 @@ const API_ROUTES = {
     },
     QUERY_PARAMS: (params: object) => Object.keys(params)
         .map((key, index) => index === 0 ? `?${key}=${params[key]}` : `&${key}=${params[key]}`)
-        .join('')
+        .join(''),
+    PARAM_URL: (param: string) => `/${param}`
 }
 
 export default API_ROUTES;

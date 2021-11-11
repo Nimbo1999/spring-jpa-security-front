@@ -20,7 +20,8 @@ const CustomerTable: FC = () => {
         size,
         onChangePage,
         onChangeRowsPerPage,
-        getCustomerList
+        getCustomerList,
+        onDeleteCustomer
     } = useCustomerContext();
 
     useEffect(() => {
@@ -46,19 +47,21 @@ const CustomerTable: FC = () => {
         {
             id: 'id',
             name: 'Açôes',
-            cell: ({ id }) => {
-                return (
-                    <div className="action-buttons">
-                        <Button type="button" variant="danger">
-                            <Delete />
-                        </Button>
+            cell: ({ id }) => (
+                <div className="action-buttons">
+                    <Button
+                        type="button"
+                        variant="danger"
+                        onClick={() => onDeleteCustomer(id)}
+                    >
+                        <Delete />
+                    </Button>
 
-                        <Button type="button">
-                            <EditDocument />
-                        </Button>
-                    </div>
-                );
-            }
+                    <Button type="button">
+                        <EditDocument />
+                    </Button>
+                </div>
+            )
         }
     ];
 

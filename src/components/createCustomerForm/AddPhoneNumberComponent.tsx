@@ -1,12 +1,13 @@
 import { ChangeEventHandler, FC, useState } from 'react';
-import validator from 'validator';
-import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 
+import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 import { PhoneType } from '../../models/PhoneNumber';
 import FormatFieldsValues, { Fields } from '../../utils/FormatFieldsValues';
 import Button from '../button/Button';
 import SingleInput from '../input/SingleInput';
 import SingleSelect from '../select/SingleSelect';
+import AddCircle from '../../assets/icons/AddCircle';
+import SubtractCircle from '../../assets/icons/SubtractCircle';
 
 import type { AddPhoneNumberComponentProps } from './AddPhoneNumberComponent.types';
 
@@ -94,7 +95,9 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
                     />
 
                     <div className="action-buttons">
-                        <Button type="button" onClick={onClickCancel} variant="danger">-</Button>
+                        <Button type="button" onClick={onClickCancel} variant="danger">
+                            <SubtractCircle width={24} height={24} />
+                        </Button>
 
                         <Button
                             type="button"
@@ -102,7 +105,7 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
                             className="enforce-disable"
                             onClick={onSubmitNewPhoneNumber}
                         >
-                            +
+                            <AddCircle width={24} height={24} />
                         </Button>
                     </div>
                 </section>

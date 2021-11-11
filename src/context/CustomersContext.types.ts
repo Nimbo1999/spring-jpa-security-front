@@ -4,6 +4,7 @@ export interface CustomerContextProps {
     getCustomerList: () => Promise<void>,
     onChangePage: (currentPage: number, totalRows: number) => void,
     onChangeRowsPerPage: (currentRowsPerPage: number, currentPage: number) => void,
+    onDeleteCustomer: (id: number) => void,
     page: number,
     size: number,
     sortBy: string,

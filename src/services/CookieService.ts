@@ -21,6 +21,10 @@ class CookieService {
         return undefined;
     }
 
+    public static deleteCookie(): void {
+        Cookie.remove('app-cookie');
+    }
+
 }
 
 export default CookieService;

@@ -1,10 +1,12 @@
 import { ChangeEventHandler, FC, useState } from 'react';
 import validator from 'validator';
-import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 
+import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 import FormatFieldsValues, { Fields } from '../../utils/FormatFieldsValues';
 import Button from '../button/Button';
 import SingleInput from '../input/SingleInput';
+import AddCircle from '../../assets/icons/AddCircle';
+import SubtractCircle from '../../assets/icons/SubtractCircle';
 
 import type { AddEmailComponentProps } from './AddEmailComponent.types';
 
@@ -71,7 +73,9 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
                     />
 
                     <div className="action-buttons">
-                        <Button type="button" onClick={onClickCancel} variant="danger">-</Button>
+                        <Button type="button" onClick={onClickCancel} variant="danger">
+                            <SubtractCircle width={24} height={24} />
+                        </Button>
 
                         <Button
                             type="button"
@@ -79,7 +83,7 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
                             className="enforce-disable"
                             onClick={onSubmitNewEmail}
                         >
-                            +
+                            <AddCircle width={24} height={24} />
                         </Button>
                     </div>
                 </section>

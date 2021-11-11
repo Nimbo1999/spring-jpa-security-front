@@ -6,6 +6,10 @@ import HttpService from '../services/HttpService';
 import Customer from '../models/Customer';
 import { CustomerList, CustomerContextProps } from './CustomersContext.types';
 import CustomerAdapter from '../adapters/CustomerAdapter';
+import HttpRequestError from '../exceptions/HttpRequestError';
+import CookieService from '../services/CookieService';
+import { useRouter } from 'next/router';
+import RouteConstants from '../constants/RoutesConstants';
 
 const CustomerContext = createContext<CustomerContextProps>({
     page: 0,
@@ -15,15 +19,17 @@ const CustomerContext = createContext<CustomerContextProps>({
     customerList: [],
     loading: false,
     onChangePage: null,
-    onChangeRowsPerPage: null
+    onChangeRowsPerPage: null,
+    onDeleteCustomer: null
 });
 
 const CustomerContextProvider: FC = ({ children }) => {
+    const router = useRouter();
     const [customerList, setCustomerList] = useState<CustomerList>([]);
 
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(5);
-    const [sortBy, setSortBy] = useState('id');
+    const [sortBy] = useState('id');
 
     const [loading, setLoading] = useState(false);
 
@@ -44,8 +50,10 @@ const CustomerContextProvider: FC = ({ children }) => {
             const formattedCustomers = CustomerAdapter.getCustomes([...response]);
             setCustomerList(formattedCustomers);
         } catch (err) {
-            // TODO: Add a toasty here!
-            console.error(err);
+            if (err instanceof HttpRequestError && err.payload) {
+                CookieService.deleteCookie();
+                router.replace(RouteConstants.HOME);
+            }
         }
     }
 
@@ -54,6 +62,20 @@ const CustomerContextProvider: FC = ({ children }) => {
     }
 
     const onChangeRowsPerPage = (currentRowsPerPage: number, currentPage: number) => setSize(currentRowsPerPage);
+
+    const onDeleteCustomer = async (id: number): Promise<void> => {
+        const url = API_ROUTES.BASE_URL + 
+            API_ROUTES.V1 +
+            API_ROUTES.CUSTOMER +
+            API_ROUTES.PARAM_URL(String(id));
+
+        try {
+            await HttpService.delete(url);
+            getCustomerList();
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     return (
         <CustomerContext.Provider value={{
@@ -64,7 +86,8 @@ const CustomerContextProvider: FC = ({ children }) => {
             sortBy,
             customerList,
             loading,
-            onChangeRowsPerPage
+            onChangeRowsPerPage,
+            onDeleteCustomer
         }}>
             {children}
         </CustomerContext.Provider>
