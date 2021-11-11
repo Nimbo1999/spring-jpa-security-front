@@ -1,5 +1,5 @@
 import Cookie from 'js-cookie';
-import { AuthSuccessResponse } from '../pages/login/login.types';
+import { AuthSuccessResponse } from '../utils/login.types';
 
 class CookieService {
 

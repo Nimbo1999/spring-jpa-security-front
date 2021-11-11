@@ -12,7 +12,7 @@ import HttpRequestError, { FormErrors } from '../../exceptions/HttpRequestError'
 
 import API_ROUTES from '../../constants/ApiRoutes';
 
-import type { AuthSuccessResponse, ErrorState } from './login.types';
+import type { AuthSuccessResponse, ErrorState } from '../../utils/login.types';
 import RouteConstants from '../../constants/RoutesConstants';
 import { GetServerSideProps } from 'next';
 

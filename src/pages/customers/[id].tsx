@@ -11,7 +11,7 @@ import PageHeader from '../../components/pageHeader/PageHeader';
 import Customer from '../../models/Customer';
 import HttpService from '../../services/HttpService';
 import API_ROUTES from '../../constants/ApiRoutes';
-import { AuthSuccessResponse } from '../login/login.types';
+import { AuthSuccessResponse } from '../../utils/login.types';
 
 const UpdateCustomer: FC<{ customer: Customer }> = ({ customer }) => (
     <div className="customers-page">

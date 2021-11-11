@@ -1,6 +1,6 @@
 import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
 import CookieService from './CookieService';
-import { AuthSuccessResponse } from '../pages/login/login.types';
+import { AuthSuccessResponse } from '../utils/login.types';
 
 class HttpService {
 
