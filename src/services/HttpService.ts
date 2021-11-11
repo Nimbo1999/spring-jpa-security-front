@@ -1,10 +1,11 @@
 import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
 import CookieService from './CookieService';
+import { AuthSuccessResponse } from '../pages/login/login.types';
 
 class HttpService {
 
-    public static async get<Response>(url: string): Promise<Response> {
-        const response = await fetch(url, { method: 'GET', headers: HttpService.defaultHeaders() });
+    public static async get<Response>(url: string, auth?: AuthSuccessResponse): Promise<Response> {
+        const response = await fetch(url, { method: 'GET', headers: HttpService.defaultHeaders(auth) });
 
         if (HttpService.hasValidStatusCode(response.status)) {
             if (HttpService.hasRequestStatusError(response)) {
@@ -93,9 +94,14 @@ class HttpService {
         throw new HttpRequestError('Invalid response status code');
     }
 
-    private static defaultHeaders(): Headers {
+    private static defaultHeaders(optional?: AuthSuccessResponse): Headers {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         
+        if (optional) {
+            headers.append('Authorization', `${optional.tokenType} ${optional.accessToken}`);
+            return headers;
+        }
+
         const authCookie = CookieService.getCookie();
 
         if (authCookie) {
@@ -105,12 +111,12 @@ class HttpService {
     }
 
     private static hasValidStatusCode(status: number): boolean {
-        const acceptedStatusCodeValues = [200, 201, 202, 204, 400, 401, 403, 404, 500];
+        const acceptedStatusCodeValues = [200, 201, 202, 204, 400, 401, 403, 404, 405, 500];
         return acceptedStatusCodeValues.includes(status);
     }
 
     private static hasRequestStatusError(response: Response) {
-        const httpStatusError = [400, 401, 403, 404, 500];
+        const httpStatusError = [400, 401, 403, 404, 405, 500];
         return httpStatusError.includes(response.status);
     }
 

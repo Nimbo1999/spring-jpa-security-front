@@ -44,7 +44,7 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
     }
 
     const onSubmitNewPhoneNumber = () => {
-        onConfirmPhone({ number: phoneNumber, type: phoneType });
+        onConfirmPhone({ id: null, number: phoneNumber, type: phoneType });
         onClickCancel();
     }
 

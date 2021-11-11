@@ -1,4 +1,6 @@
 import { Reducer } from 'react';
+import Customer from '../../models/Customer';
+import Email from '../../models/Email';
 import type { ViaCepResponse } from '../CreateCustomerContext.types';
 import type { CustomerForm, ActionTypes, AddressForm, PhoneNumberForm } from './CreateCustomerReducer.types';
 
@@ -7,9 +9,11 @@ interface Payload<T> {
 }
 
 export const initialState: CustomerForm = {
+    id: null,
     name: '',
     cpf: '',
     address: {
+        id: null,
         city: '',
         neighborhood: '',
         postalCode: '',
@@ -35,6 +39,7 @@ const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: 
         case 'VIACEP_PAYLOAD_ACTION_SUCCESS': {
             const { payload }: Payload<ViaCepResponse> = action;
             const address:AddressForm = {
+                id: state.address.id,
                 city: payload.localidade,
                 neighborhood: payload.bairro,
                 postalCode: payload.cep,
@@ -61,14 +66,28 @@ const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: 
         }
 
         case 'ADD_EMAIL': {
-            const { payload }: Payload<string> = action;
+            const { payload }: Payload<Email> = action;
             return { ...state, emails: [...state.emails, payload] }
         }
 
         case 'REMOVE_EMAIL': {
             const { payload }: Payload<string> = action;
-            const emails = state.emails.filter(email => email !== payload);
+            const emails = state.emails.filter(email => email.email !== payload);
             return { ...state, emails }
+        }
+
+        case 'HYDRATE_CUSTOMER': {
+            const { payload }: Payload<Customer> = action;
+            return {
+                ...state,
+                id: payload.id,
+                address: payload.address,
+                cpf: payload.cpf,
+                phones: payload.phones,
+                emails: payload.emails,
+                name: payload.name,
+                cepFetched: true
+            }
         }
 
         default:

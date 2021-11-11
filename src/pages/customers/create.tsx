@@ -24,7 +24,7 @@ const CreateCustomer: FC = () => {
                 <main>
                     <h2>Cadastro de cliente</h2>
 
-                    <CreateCustomerContext>
+                    <CreateCustomerContext customer={null}>
                         <CreateCustomerForm />
                     </CreateCustomerContext>
                 </main>

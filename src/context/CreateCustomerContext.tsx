@@ -1,4 +1,4 @@
-import { FC, createContext, useContext, useReducer, ChangeEventHandler, FormEventHandler, useState, FocusEvent } from 'react';
+import { FC, createContext, useContext, useReducer, ChangeEventHandler, FormEventHandler, useState, FocusEvent, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import createCustomerReducer, { initialState } from './reducers/CreateCustomer.reducer';
@@ -11,6 +11,7 @@ import FormatFieldsValues, { Fields } from '../utils/FormatFieldsValues';
 import Customer from '../models/Customer';
 import RouteConstants from '../constants/RoutesConstants';
 import HttpRequestError, { HttpRequestErrorContent } from '../exceptions/HttpRequestError';
+import Email from '../models/Email';
 
 const CreateCustomerContext = createContext<CreateCustomerContextProps>({
     address: null,
@@ -29,13 +30,20 @@ const CreateCustomerContext = createContext<CreateCustomerContextProps>({
     onSubmit: null,
     errors: null,
     onBlurField: null,
-    hasFormErrors: null
+    hasFormErrors: null,
+    id: null
 });
 
-const CreateCustomerContextProvider: FC = ({ children }) => {
+const CreateCustomerContextProvider: FC<{customer: Customer}> = ({ customer, children }) => {
     const router = useRouter();
     const [errors, setErrors] = useState<object>({});
     const [state, dispatch] = useReducer(createCustomerReducer, initialState);
+
+    useEffect(() => {
+        if (customer) {
+            dispatch({ type: 'HYDRATE_CUSTOMER', payload: customer });
+        }
+    }, []);
 
     const onBlurField = (event: FocusEvent<HTMLInputElement>) => {
         if (errors && errors[event.target.name]) {
@@ -94,7 +102,7 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
 
     const onRemovePhone = (phone:string) => dispatch({ type: 'REMOVE_PHONE_NUMBER', payload: phone })
 
-    const onConfirmEmail = (email:string) => dispatch({ type: 'ADD_EMAIL', payload: email })
+    const onConfirmEmail = (email:Email) => dispatch({ type: 'ADD_EMAIL', payload: email })
 
     const onRemoveEmail = (email:string) => dispatch({ type: 'REMOVE_EMAIL', payload: email })
 
@@ -110,15 +118,15 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
 
     const getFormPayload = (): Customer => {
         return {
-            id: null,
+            id: state.id,
             name: state.name,
             cpf: state.cpf,
             address: {
-                id: null,
+                id: state.id,
                 ...state.address
             },
-            emails: [...state.emails].map(email => ({ id: null, email })),
-            phones: [...state.phones].map(({ number, type }) => ({ id: null, number, type }))
+            emails: [...state.emails],
+            phones: [...state.phones]
         }
     }
 
@@ -135,12 +143,23 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
 
     const onSubmit: FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
         event.preventDefault();
-        const url = API_ROUTES.BASE_URL +
+        const url = !customer ? (
+            API_ROUTES.BASE_URL +
             API_ROUTES.V1 +
-            API_ROUTES.CUSTOMER;
+            API_ROUTES.CUSTOMER
+            ) : (
+                API_ROUTES.BASE_URL +
+                API_ROUTES.V1 +
+                API_ROUTES.CUSTOMER +
+                API_ROUTES.PARAM_URL(String(state.id))
+            );
 
         try {
-            await HttpService.post(url, getFormPayload());
+            if (customer) {
+                await HttpService.put(url, getFormPayload());
+            } else {
+                await HttpService.post(url, getFormPayload());
+            }
             router.push(RouteConstants.CUSTOMERS.ROOT);
         } catch(err) {
             if (err instanceof HttpRequestError && err.payload) {

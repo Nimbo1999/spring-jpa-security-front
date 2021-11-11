@@ -1,5 +1,7 @@
+import Email from '../../models/Email';
+
 export interface AddEmailComponentProps {
-    onConfirmEmail: (email: string) => void,
+    onConfirmEmail: (email: Email) => void,
     onRemoveEmail: (email: string) => void,
-    emailList: string[]
+    emailList: Email[]
 }

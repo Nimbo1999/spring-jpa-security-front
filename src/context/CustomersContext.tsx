@@ -14,41 +14,65 @@ import RouteConstants from '../constants/RoutesConstants';
 const CustomerContext = createContext<CustomerContextProps>({
     page: 0,
     getCustomerList: null,
-    size: 5,
+    size: 10,
     sortBy: 'id',
     customerList: [],
     loading: false,
     onChangePage: null,
     onChangeRowsPerPage: null,
-    onDeleteCustomer: null
+    onDeleteCustomer: null,
+    count: 0
 });
 
 const CustomerContextProvider: FC = ({ children }) => {
     const router = useRouter();
     const [customerList, setCustomerList] = useState<CustomerList>([]);
 
-    const [page, setPage] = useState(0);
-    const [size, setSize] = useState(5);
+    const [count, setCount] = useState(0);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(10);
     const [sortBy] = useState('id');
 
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (customerList.length) {
-            getCustomerList();
-        }
-    }, [page, size]);
+    const getCustomerCount = async (): Promise<void> => {
+        const url = API_ROUTES.BASE_URL +
+            API_ROUTES.V1 +
+            API_ROUTES.CUSTOMER +
+            API_ROUTES.COUNT;
 
-    const getCustomerList = async (): Promise<void> => {
+        try {
+            const response = await HttpService.get<{ count: number }>(url);
+            console.log('Aquii1!!', response);
+            setCount(response.count);
+            setSize(10);
+            setLoading(false);
+        } catch(err) {
+            console.log({ err });
+            if (err instanceof HttpRequestError && err.payload) {
+                CookieService.deleteCookie();
+                router.replace(RouteConstants.HOME);
+            }
+        }
+    }
+
+    const getCustomerList = async (callback?: () => void): Promise<void> => {
+        setLoading(true);
+        setCustomerList([]);
         const url = API_ROUTES.BASE_URL +
         API_ROUTES.V1 +
         API_ROUTES.CUSTOMER +
-        API_ROUTES.QUERY_PARAMS({ page, size });
+        API_ROUTES.QUERY_PARAMS({ page: page - 1, size });
 
         try {
             const response = await HttpService.get<Customer[]>(url);
             const formattedCustomers = CustomerAdapter.getCustomes([...response]);
             setCustomerList(formattedCustomers);
+            if (callback) {
+                callback();
+            } else {
+                setLoading(false);
+            }
         } catch (err) {
             if (err instanceof HttpRequestError && err.payload) {
                 CookieService.deleteCookie();
@@ -58,7 +82,7 @@ const CustomerContextProvider: FC = ({ children }) => {
     }
 
     const onChangePage = (currentPage: number, totalRows: number): void => {
-        if (totalRows === size) setPage(currentPage);
+        setPage(currentPage);
     }
 
     const onChangeRowsPerPage = (currentRowsPerPage: number, currentPage: number) => setSize(currentRowsPerPage);
@@ -77,6 +101,11 @@ const CustomerContextProvider: FC = ({ children }) => {
         }
     }
 
+    useEffect(() => {
+        getCustomerCount();
+        getCustomerList();
+    }, [page, size]);
+
     return (
         <CustomerContext.Provider value={{
             getCustomerList,
@@ -87,7 +116,8 @@ const CustomerContextProvider: FC = ({ children }) => {
             customerList,
             loading,
             onChangeRowsPerPage,
-            onDeleteCustomer
+            onDeleteCustomer,
+            count
         }}>
             {children}
         </CustomerContext.Provider>

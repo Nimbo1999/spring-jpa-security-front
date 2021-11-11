@@ -18,15 +18,11 @@ const CustomerTable: FC = () => {
         loading,
         page,
         size,
+        count,
         onChangePage,
         onChangeRowsPerPage,
-        getCustomerList,
         onDeleteCustomer
     } = useCustomerContext();
-
-    useEffect(() => {
-        getCustomerList();
-    }, []);
 
     const columns = [
         {
@@ -57,7 +53,7 @@ const CustomerTable: FC = () => {
                         <Delete />
                     </Button>
 
-                    <Button type="button">
+                    <Button type="button" onClick={() => router.push(`${router.pathname}/${id}`)}>
                         <EditDocument />
                     </Button>
                 </div>
@@ -78,10 +74,13 @@ const CustomerTable: FC = () => {
             progressPending={loading}
             pagination
             paginationServer
-            paginationServerOptions={{}}
+            paginationTotalRows={count}
             paginationDefaultPage={page}
             paginationPerPage={size}
-            paginationRowsPerPageOptions={[5, 10, 15, 20]}
+            striped
+            paginationComponentOptions={{
+                rowsPerPageText: 'Itens por página'
+            }}
             onChangePage={onChangePage}
             onChangeRowsPerPage={onChangeRowsPerPage}
             actions={(

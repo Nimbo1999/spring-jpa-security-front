@@ -29,7 +29,7 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
     }
 
     const onSubmitNewEmail = () => {
-        onConfirmEmail(email);
+        onConfirmEmail({ id: null, email });
         onClickCancel();
     }
 
@@ -43,7 +43,7 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
     return (
         <div className="add-phone-number-component">
             <header className="inserted-phones">
-                {emailList.map(email => (
+                {emailList.map(({ email }) => (
                     <button
                         key={email}
                         className="tag"

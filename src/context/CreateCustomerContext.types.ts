@@ -1,4 +1,5 @@
 import { ChangeEvent, FocusEvent, FormEventHandler } from 'react';
+import Email from '../models/Email';
 import type { CustomerForm, PhoneNumberForm } from './reducers/CreateCustomerReducer.types';
 
 export interface CreateCustomerContextProps extends CustomerForm {
@@ -6,7 +7,7 @@ export interface CreateCustomerContextProps extends CustomerForm {
     onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
     onConfirmPhone: (phone:PhoneNumberForm) => void;
     onRemovePhone: (number: string) => void,
-    onConfirmEmail: (email: string) => void,
+    onConfirmEmail: (email: Email) => void,
     onRemoveEmail: (email: string) => void,
     onSubmit: FormEventHandler<HTMLFormElement>,
     onBlurField: (event: FocusEvent<HTMLInputElement>) => void,
