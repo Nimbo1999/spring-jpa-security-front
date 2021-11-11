@@ -1,4 +1,5 @@
 import { ChangeEventHandler, FC, useState } from 'react';
+import validator from 'validator';
 
 import { PhoneType } from '../../models/PhoneNumber';
 import FormatFieldsValues, { Fields } from '../../utils/FormatFieldsValues';
@@ -44,6 +45,7 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
     }
 
     const phoneNumberDisabled = phoneNumber.replace(/\D/g, '').length < 10;
+    const phoneNumberErrors = phoneNumberDisabled && phoneNumber ? ['Informe um número de telefone válido'] : []; 
 
     return (
         <div className="add-phone-number-component">
@@ -72,7 +74,7 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
                         type="text"
                         placeholder="Número"
                         value={phoneNumber}
-                        errors={[]}
+                        errors={phoneNumberErrors}
                         onChange={onChangeInput}
                     />
 

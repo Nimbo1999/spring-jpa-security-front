@@ -5,7 +5,9 @@ export interface CreateCustomerContextProps extends CustomerForm {
     getAddressByPostalCode: () => void;
     onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
     onConfirmPhone: (phone:PhoneNumberForm) => void;
-    onRemovePhone: (number: string) => void
+    onRemovePhone: (number: string) => void,
+    onConfirmEmail: (email: string) => void,
+    onRemoveEmail: (email: string) => void,
 }
 
 export interface ViaCepResponse {

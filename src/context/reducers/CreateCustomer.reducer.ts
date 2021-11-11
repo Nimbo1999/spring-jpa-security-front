@@ -19,7 +19,8 @@ export const initialState: CustomerForm = {
     },
     phones: [],
     emails: [],
-    cepFetched: false
+    cepFetched: false,
+    loading: false
 }
 
 const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: any}> = (state, action) => {
@@ -27,7 +28,11 @@ const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: 
         case 'UPDATE_STATE':
             return action.payload as CustomerForm;
 
-        case 'VIACEP_PAYLOAD_ACTION': {
+        case 'VIACEP_PAYLOAD_ACTION_STARTED': {
+            return { ...state, loading: true }
+        }
+
+        case 'VIACEP_PAYLOAD_ACTION_SUCCESS': {
             const { payload }: Payload<ViaCepResponse> = action;
             const address:AddressForm = {
                 city: payload.localidade,
@@ -37,7 +42,7 @@ const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: 
                 uf: payload.uf,
                 complement: payload.complemento
             }
-            return { ...state, address, cepFetched: true };
+            return { ...state, address, cepFetched: true, loading: false };
         }
 
         case 'ADD_NEW_PHONE_NUMBER': {
@@ -53,6 +58,17 @@ const createCustomerReducer: Reducer<CustomerForm, {type: ActionTypes, payload: 
             const { payload }: Payload<string> = action;
             const phones = state.phones.filter(phone => phone.number !== payload);
             return { ...state, phones }
+        }
+
+        case 'ADD_EMAIL': {
+            const { payload }: Payload<string> = action;
+            return { ...state, emails: [...state.emails, payload] }
+        }
+
+        case 'REMOVE_EMAIL': {
+            const { payload }: Payload<string> = action;
+            const emails = state.emails.filter(email => email !== payload);
+            return { ...state, emails }
         }
 
         default:

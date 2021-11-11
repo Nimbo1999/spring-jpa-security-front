@@ -3,70 +3,104 @@ form.customer-form {
     flex-direction: column;
     row-gap: calc($base-unit * 2);
 
-    .add-phone-number-component {
-        width: 100%;
+    .cep-row {
+        display: flex;
+        gap: calc($base-unit * 3);
+        align-items: center;
+
+        .single-input-wrapper {
+            flex: 1;
+        }
+    }
+
+    .add-box-content {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        row-gap: calc($base-unit * 2);
+        gap: calc($base-unit * 2);
 
-        section.new-number-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: calc($base-unit * 2);
+        @media screen and(min-width: calc($break-lg * 1.33)) {
+            flex-direction: row;
+        }
 
-            padding: calc($base-unit * 2);
-            border: 1px solid $light-grey;
-            border-radius: $border-radius;
+        .add-phone-number-component {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            column-gap: calc($base-unit * 1);
+
+            button.app-button {
+                margin-top: $base-unit;
+                width: 100%;
+            }
     
-            .single-input-wrapper {
-                flex: 6;
-            }
-
-            select {
-                flex: 1;
-            }
-
-            .action-buttons {
+            section.new-number-content {
                 display: flex;
-                column-gap: calc($base-unit * 1.5);
-                flex: 1 0 $base-unit * 20;
-                @media screen and (min-width: $break-md) {
-                    flex: 0 0 0;
+                flex-wrap: wrap;
+                gap: calc($base-unit * 2);
+    
+                padding: calc($base-unit * 2);
+                border: 1px solid $light-grey;
+                border-radius: $border-radius;
+                width: 100%;
+        
+                .single-input-wrapper {
+                    flex: 6;
                 }
-
-                button {
-                    flex: 1 0 calc($base-unit * 6);
+    
+                select {
+                    flex: 1;
+                }
+    
+                .action-buttons {
+                    display: flex;
+                    column-gap: calc($base-unit * 1.5);
+                    flex: 1 0 $base-unit * 20;
                     @media screen and (min-width: $break-md) {
-                        flex: 0 0 calc($base-unit * 6);
+                        flex: 0 0 0;
                     }
-
-                    &.enforce-disable {
-                        &:disabled {
-                            opacity: .5;
-                            cursor: not-allowed;
+    
+                    button {
+                        flex: 1 0 calc($base-unit * 6);
+                        @media screen and (min-width: $break-md) {
+                            flex: 0 0 calc($base-unit * 6);
+                        }
+    
+                        &.enforce-disable {
+                            &:disabled {
+                                opacity: .5;
+                                cursor: not-allowed;
+                            }
                         }
                     }
                 }
             }
-        }
-
-        .inserted-phones {
-            display: flex;
-            gap: $base-unit;
-            justify-content: flex-start;
-            align-items: flex-start;
-            flex-wrap: wrap;
-
-            button.tag {
-                background-color: $color-green;
-                color: $white;
-                padding: $base-unit calc($base-unit * 2);
-                border-radius: $border-radius;
-                border: none;
-                font-size: .875rem;
+    
+            .inserted-phones {
+                display: flex;
+                gap: $base-unit;
+                justify-content: flex-start;
+                align-items: flex-start;
+                flex-wrap: wrap;
+    
+                button.tag {
+                    background-color: $color-green;
+                    color: $white;
+                    padding: $base-unit calc($base-unit * 2);
+                    border-radius: $border-radius;
+                    border: none;
+                    font-size: .875rem;
+                }
             }
+        }
+    }
+
+    footer {
+        display: flex;
+        gap: calc($base-unit * 2);
+
+        button {
+            flex: 1;
         }
     }
 }

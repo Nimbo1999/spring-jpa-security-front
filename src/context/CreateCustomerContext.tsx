@@ -18,27 +18,22 @@ const CreateCustomerContext = createContext<CreateCustomerContextProps>({
     onChangeInput: null,
     cepFetched: null,
     onConfirmPhone: null,
-    onRemovePhone: null
+    onRemovePhone: null,
+    onConfirmEmail: null,
+    onRemoveEmail: null,
+    loading: false
 });
 
 const CreateCustomerContextProvider: FC = ({ children }) => {
-
     const [state, dispatch] = useReducer(createCustomerReducer, initialState);
 
     const getAddressByPostalCode = async () => {
         if (state.address.postalCode.replace(/\D/g, '').length === 8) {
+            dispatch({ type: 'VIACEP_PAYLOAD_ACTION_STARTED', payload: null });
             const url = API_ROUTES.THIRD_PARTY.VIACEP_URL(state.address.postalCode);
             const result = await HttpService.rawGet<ViaCepResponse>(url);
-            dispatch({ type: 'VIACEP_PAYLOAD_ACTION', payload: result });
+            dispatch({ type: 'VIACEP_PAYLOAD_ACTION_SUCCESS', payload: result });
         }
-    }
-
-    const getValueFromNestedParamName = (params: string[]): string => {
-        let value: string;
-        for (const iterator of params) {
-            value = value ? value[iterator] : state[iterator];
-        }
-        return value;
     }
 
     const setValueIntoStateFromNestedParamName = (value: string, params: string[]): CustomerForm => {
@@ -74,6 +69,10 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
 
     const onRemovePhone = (phone:string) => dispatch({ type: 'REMOVE_PHONE_NUMBER', payload: phone })
 
+    const onConfirmEmail = (email:string) => dispatch({ type: 'ADD_EMAIL', payload: email })
+
+    const onRemoveEmail = (email:string) => dispatch({ type: 'REMOVE_EMAIL', payload: email })
+
     const onChangeInput: ChangeEventHandler<HTMLInputElement> = event => {
         const target = event.target;
         const params = target.name.split('.');
@@ -90,7 +89,9 @@ const CreateCustomerContextProvider: FC = ({ children }) => {
             getAddressByPostalCode,
             onChangeInput,
             onConfirmPhone,
-            onRemovePhone
+            onRemovePhone,
+            onConfirmEmail,
+            onRemoveEmail
         }}>
             {children}
         </CreateCustomerContext.Provider>

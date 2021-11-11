@@ -1,8 +1,11 @@
 import { FC } from 'react';
 import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
+import Button from '../button/Button';
 
 import SingleInput from '../input/SingleInput';
+import Loader from '../loader/Loader';
 import SectionHeader from '../sectionHeader/SectionHeader';
+import AddEmailComponent from './AddEmailComponent';
 import AddPhoneNumberComponent from './AddPhoneNumberComponent';
 
 const CreateCustomerForm: FC = () => {
@@ -11,6 +14,8 @@ const CreateCustomerForm: FC = () => {
         getAddressByPostalCode,
         onConfirmPhone,
         onRemovePhone,
+        onConfirmEmail,
+        onRemoveEmail,
         address: {
             postalCode,
             city,
@@ -22,7 +27,9 @@ const CreateCustomerForm: FC = () => {
         name,
         cpf,
         cepFetched,
-        phones
+        phones,
+        emails,
+        loading
     } = useCreateCustomerContext();
 
     return (
@@ -55,77 +62,98 @@ const CreateCustomerForm: FC = () => {
                 Endereço do cliente
             </SectionHeader>
 
-            <SingleInput
-                id="postalCode"
-                name="address.postalCode"
-                type="text"
-                placeholder="Código postal"
-                value={postalCode}
-                errors={[]}
-                onChange={onChangeInput}
-                onBlur={getAddressByPostalCode}
-            />
+            <div className="cep-row">
+                <SingleInput
+                    id="postalCode"
+                    name="address.postalCode"
+                    type="text"
+                    placeholder="Código postal"
+                    value={postalCode}
+                    errors={[]}
+                    onChange={onChangeInput}
+                    onBlur={getAddressByPostalCode}
+                />
 
-            <SingleInput
-                id="city"
-                name="address.city"
-                type="text"
-                placeholder="Cidade"
-                value={city}
-                errors={[]}
-                onChange={onChangeInput}
-                disabled={!cepFetched}
-            />
+                {loading && <Loader color="primary" size="large" />}
+            </div>
 
-            <SingleInput
-                id="neighborhood"
-                name="address.neighborhood"
-                type="text"
-                placeholder="Bairro"
-                value={neighborhood}
-                errors={[]}
-                onChange={onChangeInput}
-                disabled={!cepFetched}
-            />
+            {cepFetched && (
+                <>
+                    <SingleInput
+                        id="city"
+                        name="address.city"
+                        type="text"
+                        placeholder="Cidade"
+                        value={city}
+                        errors={[]}
+                        onChange={onChangeInput}
+                        disabled={!cepFetched}
+                    />
 
-            <SingleInput
-                id="publicPlace"
-                name="address.publicPlace"
-                type="text"
-                placeholder="Logradouro"
-                value={publicPlace}
-                errors={[]}
-                onChange={onChangeInput}
-                disabled={!cepFetched}
-            />
+                    <SingleInput
+                        id="neighborhood"
+                        name="address.neighborhood"
+                        type="text"
+                        placeholder="Bairro"
+                        value={neighborhood}
+                        errors={[]}
+                        onChange={onChangeInput}
+                        disabled={!cepFetched}
+                    />
 
-            <SingleInput
-                id="uf"
-                name="address.uf"
-                type="text"
-                placeholder="UF"
-                value={uf}
-                errors={[]}
-                onChange={onChangeInput}
-                disabled={!cepFetched}
-            />
+                    <SingleInput
+                        id="publicPlace"
+                        name="address.publicPlace"
+                        type="text"
+                        placeholder="Logradouro"
+                        value={publicPlace}
+                        errors={[]}
+                        onChange={onChangeInput}
+                        disabled={!cepFetched}
+                    />
 
-            <SingleInput
-                id="complement"
-                name="address.complement"
-                type="text"
-                placeholder="Complemento"
-                value={complement}
-                errors={[]}
-                onChange={onChangeInput}
-                disabled={!cepFetched}
-            />
+                    <SingleInput
+                        id="uf"
+                        name="address.uf"
+                        type="text"
+                        placeholder="UF"
+                        value={uf}
+                        errors={[]}
+                        onChange={onChangeInput}
+                        disabled={!cepFetched}
+                    />
 
-            <AddPhoneNumberComponent
-                onConfirmPhone={onConfirmPhone}
-                onRemovePhone={onRemovePhone}
-                phoneList={phones}
-            />
+                    <SingleInput
+                        id="complement"
+                        name="address.complement"
+                        type="text"
+                        placeholder="Complemento"
+                        value={complement}
+                        errors={[]}
+                        onChange={onChangeInput}
+                        disabled={!cepFetched}
+                    />
+                </>
+            )}
+
+            <div className="add-box-content">
+                <AddPhoneNumberComponent
+                    onConfirmPhone={onConfirmPhone}
+                    onRemovePhone={onRemovePhone}
+                    phoneList={phones}
+                />
+
+                <AddEmailComponent
+                    emailList={emails}
+                    onConfirmEmail={onConfirmEmail}
+                    onRemoveEmail={onRemoveEmail}
+                />
+            </div>
+
+            <footer>
+                <Button type="button">Voltar</Button>
+                <Button type="submit">Confirmar</Button>
+            </footer>
         </form>
     );
 }
