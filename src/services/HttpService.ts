@@ -18,6 +18,21 @@ class HttpService {
         throw new HttpRequestError('Invalid response status code');
     }
 
+    public static async rawGet<Response>(url: string): Promise<Response> {
+        const response = await fetch(url, { method: 'GET' });
+
+        if (HttpService.hasValidStatusCode(response.status)) {
+            if (HttpService.hasRequestStatusError(response)) {
+                const content = await response.json() as HttpRequestErrorContent;
+                throw new HttpRequestError(`HTTP GET request failed to ${url}`, content);
+            }
+
+            return await response.json() as Response;
+        }
+
+        throw new HttpRequestError('Invalid response status code');
+    }
+
     public static async post<Response>(url: string, payload?: any): Promise<Response> {
         const response = await fetch(url, {
             method: 'POST',

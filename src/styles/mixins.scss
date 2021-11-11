@@ -1,0 +1,24 @@
+@mixin input-style-base {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 28px;
+
+    border: 2px solid $light-grey;
+    border-radius: $border-radius;
+    padding: $base-unit calc($base-unit * 2);
+    color: $text-paragraph;
+    outline-color: $primary-color;
+
+    &::placeholder {
+        color: rgba($text-paragraph, .8);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: .8;
+
+        &::placeholder {
+            color: rgba($text-paragraph, .7);
+        }
+    }
+}

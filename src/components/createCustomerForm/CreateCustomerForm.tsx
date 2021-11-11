@@ -3,11 +3,27 @@ import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
 
 import SingleInput from '../input/SingleInput';
 import SectionHeader from '../sectionHeader/SectionHeader';
+import AddPhoneNumberComponent from './AddPhoneNumberComponent';
 
 const CreateCustomerForm: FC = () => {
-    const { onChangeInput } = useCreateCustomerContext();
-
-    console.log(onChangeInput);
+    const {
+        onChangeInput,
+        getAddressByPostalCode,
+        onConfirmPhone,
+        onRemovePhone,
+        address: {
+            postalCode,
+            city,
+            neighborhood,
+            publicPlace,
+            uf,
+            complement
+        },
+        name,
+        cpf,
+        cepFetched,
+        phones
+    } = useCreateCustomerContext();
 
     return (
         <form method="POST" className="customer-form">
@@ -15,32 +31,101 @@ const CreateCustomerForm: FC = () => {
                 Dados do cliente
             </SectionHeader>
 
-            <SingleInput id="name" name="name" type="text" placeholder="Nome completo" errors={[]} />
+            <SingleInput
+                id="customerName"
+                name="name"
+                type="text"
+                placeholder="Nome completo"
+                value={name}
+                errors={[]}
+                onChange={onChangeInput}
+            />
 
-            <SingleInput id="cpf" name="cpf" type="text" placeholder="CPF" errors={[]} />
+            <SingleInput
+                id="cpf"
+                name="cpf"
+                type="text"
+                placeholder="CPF"
+                value={cpf}
+                errors={[]}
+                onChange={onChangeInput}
+            />
 
             <SectionHeader>
                 Endereço do cliente
             </SectionHeader>
 
             <SingleInput
-                id="address.postalCode"
+                id="postalCode"
                 name="address.postalCode"
                 type="text"
                 placeholder="Código postal"
+                value={postalCode}
                 errors={[]}
                 onChange={onChangeInput}
+                onBlur={getAddressByPostalCode}
             />
 
-            <SingleInput id="address.city" name="address.city" type="text" placeholder="Cidade" errors={[]} />
+            <SingleInput
+                id="city"
+                name="address.city"
+                type="text"
+                placeholder="Cidade"
+                value={city}
+                errors={[]}
+                onChange={onChangeInput}
+                disabled={!cepFetched}
+            />
 
-            <SingleInput id="address.neighborhood" name="address.neighborhood" type="text" placeholder="Bairro" errors={[]} />
+            <SingleInput
+                id="neighborhood"
+                name="address.neighborhood"
+                type="text"
+                placeholder="Bairro"
+                value={neighborhood}
+                errors={[]}
+                onChange={onChangeInput}
+                disabled={!cepFetched}
+            />
 
-            <SingleInput id="address.publicPlace" name="address.publicPlace" type="text" placeholder="Logradouro" errors={[]} />
+            <SingleInput
+                id="publicPlace"
+                name="address.publicPlace"
+                type="text"
+                placeholder="Logradouro"
+                value={publicPlace}
+                errors={[]}
+                onChange={onChangeInput}
+                disabled={!cepFetched}
+            />
 
-            <SingleInput id="address.uf" name="address.uf" type="text" placeholder="UF" errors={[]} />
+            <SingleInput
+                id="uf"
+                name="address.uf"
+                type="text"
+                placeholder="UF"
+                value={uf}
+                errors={[]}
+                onChange={onChangeInput}
+                disabled={!cepFetched}
+            />
 
-            <SingleInput id="address.complement" name="address.complement" type="text" placeholder="Complemento" errors={[]} />
+            <SingleInput
+                id="complement"
+                name="address.complement"
+                type="text"
+                placeholder="Complemento"
+                value={complement}
+                errors={[]}
+                onChange={onChangeInput}
+                disabled={!cepFetched}
+            />
+
+            <AddPhoneNumberComponent
+                onConfirmPhone={onConfirmPhone}
+                onRemovePhone={onRemovePhone}
+                phoneList={phones}
+            />
         </form>
     );
 }

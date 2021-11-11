@@ -1,4 +1,4 @@
-type PhoneType = 'RESIDENTIAL' | 'COMMERCIAL' | 'CELL_PHONE';
+export type PhoneType = 'RESIDENTIAL' | 'COMMERCIAL' | 'CELL_PHONE';
 
 interface PhoneNumber {
     id: number;

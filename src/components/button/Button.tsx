@@ -3,12 +3,12 @@ import Loader from '../loader/Loader';
 
 import type { ButtonProps } from './Button.types';
 
-const Button: FC<ButtonProps> = ({ children, variant = 'primary', type = 'button', loading = false, disabled, ...props }) => {
-    const classes: string[] = [variant];
+const Button: FC<ButtonProps> = ({ children, variant = 'primary', type = 'button', loading = false, disabled, className, ...props }) => {
+    const classes: string[] = ['app-button', variant];
     if (loading) classes.push('loading');
 
     return (
-        <button type={type} {...props} className={classes.join(' ')} disabled={disabled || loading}>
+        <button type={type} {...props} className={[...classes, className].join(' ')} disabled={disabled || loading}>
             {children}
 
             <div className="button-loading">

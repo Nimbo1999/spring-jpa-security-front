@@ -1,0 +1,7 @@
+select.single-select {
+    @include input-style-base;
+
+    option {
+        padding: $base-unit calc($base-unit * 2);
+    }
+}

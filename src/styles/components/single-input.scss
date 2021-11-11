@@ -3,18 +3,7 @@
     flex-direction: column;
 
     input {
-        border: 2px solid $light-grey;
-        border-radius: $border-radius;
-        color: $text-paragraph;
-        font-size: 1rem;
-        font-weight: 500;
-        line-height: 28px;
-        padding: $base-unit calc($base-unit * 2);
-        outline-color: $primary-color;
-    
-        &::placeholder {
-            color: rgba($text-paragraph, .8);
-        }
+        @include input-style-base;
     }
 
     ul {
