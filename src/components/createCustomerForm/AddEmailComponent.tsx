@@ -10,7 +10,7 @@ import SubtractCircle from '../../assets/icons/SubtractCircle';
 
 import type { AddEmailComponentProps } from './AddEmailComponent.types';
 
-const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailList = [], onRemoveEmail }) => {
+const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailList = [], onRemoveEmail, canAddContent }) => {
     const { errors, onBlurField } = useCreateCustomerContext();
 
     const [isAddingEmail, setIsAddingEmail] = useState(false);
@@ -55,11 +55,14 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
                 ))}
             </header>
 
-            {!isAddingEmail ? (
-                <Button onClick={onClickAddEmail} type="button">
-                    Adicionar Email
-                </Button>
-            ) : (
+            {!isAddingEmail ? canAddContent
+                ? (
+                    <Button onClick={onClickAddEmail} type="button">
+                        Adicionar Email
+                    </Button>
+                )
+                : null
+            : (
                 <section className="new-number-content">
                     <SingleInput
                         id="emails"
@@ -70,6 +73,7 @@ const AddEmailComponent: FC<AddEmailComponentProps> = ({ onConfirmEmail, emailLi
                         errors={emailErrors}
                         onChange={onChangeInput}
                         onBlur={onBlurField}
+                        readOnly={canAddContent}
                     />
 
                     <div className="action-buttons">

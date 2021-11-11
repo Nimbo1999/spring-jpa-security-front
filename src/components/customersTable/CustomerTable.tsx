@@ -19,10 +19,13 @@ const CustomerTable: FC = () => {
         page,
         size,
         count,
+        user,
         onChangePage,
         onChangeRowsPerPage,
         onDeleteCustomer
     } = useCustomerContext();
+
+    console.log({ user });
 
     const columns = [
         {
@@ -83,7 +86,7 @@ const CustomerTable: FC = () => {
             }}
             onChangePage={onChangePage}
             onChangeRowsPerPage={onChangeRowsPerPage}
-            actions={(
+            actions={user && user.authorities.some(authority => authority === 'ALL') && (
                 <Button type="button" onClick={navigateToCreateCustomerPage}>
                     Adicionar cliente
                 </Button>

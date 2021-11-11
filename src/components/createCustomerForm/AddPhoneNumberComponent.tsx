@@ -18,7 +18,7 @@ const phoneNumberOptLabel = {
     RESIDENTIAL: 'Residencial'
 }
 
-const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPhone, phoneList = [], onRemovePhone }) => {
+const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPhone, phoneList = [], onRemovePhone, canAddContent }) => {
     const { errors, onBlurField } = useCreateCustomerContext();
 
     const [isAddingPhoneNumber, setIsAddingPhoneNumber] = useState(false);
@@ -70,11 +70,15 @@ const AddPhoneNumberComponent: FC<AddPhoneNumberComponentProps> = ({ onConfirmPh
                 ))}
             </header>
 
-            {!isAddingPhoneNumber ? (
-                <Button onClick={onClickAddPhoneNumber} type="button">
-                    Adicionar Telefone
-                </Button>
-            ) : (
+            {!isAddingPhoneNumber ?
+                canAddContent
+                    ? (
+                        <Button onClick={onClickAddPhoneNumber} type="button">
+                            Adicionar Telefone
+                        </Button>
+                    )
+                    : null
+            : (
                 <section className="new-number-content">
                     <SingleInput
                         id="phones"

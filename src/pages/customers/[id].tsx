@@ -33,7 +33,7 @@ const UpdateCustomer: FC<{ customer: Customer }> = ({ customer }) => (
             </main>
         </section>
     </div>
-    );
+);
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
     const isAuthenticated = Boolean(req.cookies && req.cookies['app-cookie']);

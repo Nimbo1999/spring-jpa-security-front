@@ -1,3 +1,5 @@
+import User from '../models/User';
+
 export type CustomerList = CustomerTableItem[];
 
 export interface CustomerContextProps {
@@ -11,6 +13,7 @@ export interface CustomerContextProps {
     customerList: CustomerList;
     loading: boolean;
     count: number;
+    user: User;
 }
 
 export interface CustomerTableItem {

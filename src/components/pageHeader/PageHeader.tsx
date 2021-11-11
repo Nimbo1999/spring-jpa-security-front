@@ -4,9 +4,15 @@ import { useRouter } from 'next/router';
 import Arrow from '../../assets/icons/Arrow';
 import Button from '../button/Button';
 import RouteConstants from '../../constants/RoutesConstants';
+import CookieService from '../../services/CookieService';
 
 const PageHeader: FC = () => {
     const router = useRouter();
+
+    const logoutUser = () => {
+        CookieService.deleteCookie();
+        router.replace(RouteConstants.HOME);
+    }
 
     return (
         <header className="page-header">
@@ -20,7 +26,7 @@ const PageHeader: FC = () => {
                 <h2>App name</h2>
             </nav>
 
-            <Button>
+            <Button type="button" onClick={logoutUser}>
                 Sair
             </Button>
         </header>

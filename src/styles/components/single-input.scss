@@ -4,6 +4,12 @@
 
     input {
         @include input-style-base;
+
+        &:read-only {
+            border: none;
+            cursor: default;
+            outline: none;
+        }
     }
 
     ul {

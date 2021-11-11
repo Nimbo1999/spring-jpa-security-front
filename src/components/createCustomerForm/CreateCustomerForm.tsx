@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { useCreateCustomerContext } from '../../context/CreateCustomerContext';
+import { useCustomerContext } from '../../context/CustomersContext';
 import Button from '../button/Button';
 
 import SingleInput from '../input/SingleInput';
@@ -11,6 +12,7 @@ import AddPhoneNumberComponent from './AddPhoneNumberComponent';
 
 const CreateCustomerForm: FC = () => {
     const route = useRouter();
+    const { user } = useCustomerContext();
     const {
         onChangeInput,
         getAddressByPostalCode,
@@ -38,6 +40,8 @@ const CreateCustomerForm: FC = () => {
         errors
     } = useCreateCustomerContext();
 
+    const canEditForm = user && user.authorities.some(authority => authority === 'ALL');
+
     return (
         <form method="POST" className="customer-form" onSubmit={onSubmit}>
             <SectionHeader>
@@ -53,6 +57,7 @@ const CreateCustomerForm: FC = () => {
                 errors={errors && errors['name'] ? errors['name'] : []}
                 onChange={onChangeInput}
                 onBlur={onBlurField}
+                readOnly={!canEditForm}
             />
 
             <SingleInput
@@ -64,6 +69,7 @@ const CreateCustomerForm: FC = () => {
                 errors={errors && errors['cpf'] ? errors['cpf'] : []}
                 onChange={onChangeInput}
                 onBlur={onBlurField}
+                readOnly={!canEditForm}
             />
 
             <SectionHeader>
@@ -80,6 +86,7 @@ const CreateCustomerForm: FC = () => {
                     errors={errors && errors['address.postalCode'] ? errors['address.postalCode'] : []}
                     onChange={onChangeInput}
                     onBlur={getAddressByPostalCode}
+                    readOnly={!canEditForm}
                 />
 
                 {loading && <Loader color="primary" size="large" />}
@@ -97,6 +104,7 @@ const CreateCustomerForm: FC = () => {
                         onChange={onChangeInput}
                         onBlur={onBlurField}
                         disabled={!cepFetched}
+                        readOnly={!canEditForm}
                     />
 
                     <SingleInput
@@ -109,6 +117,7 @@ const CreateCustomerForm: FC = () => {
                         onChange={onChangeInput}
                         onBlur={onBlurField}
                         disabled={!cepFetched}
+                        readOnly={!canEditForm}
                     />
 
                     <SingleInput
@@ -121,6 +130,7 @@ const CreateCustomerForm: FC = () => {
                         onChange={onChangeInput}
                         onBlur={onBlurField}
                         disabled={!cepFetched}
+                        readOnly={!canEditForm}
                     />
 
                     <SingleInput
@@ -133,6 +143,7 @@ const CreateCustomerForm: FC = () => {
                         onChange={onChangeInput}
                         onBlur={onBlurField}
                         disabled={!cepFetched}
+                        readOnly={!canEditForm}
                     />
 
                     <SingleInput
@@ -144,6 +155,7 @@ const CreateCustomerForm: FC = () => {
                         onChange={onChangeInput}
                         onBlur={onBlurField}
                         disabled={!cepFetched}
+                        readOnly={!canEditForm}
                     />
                 </>
             )}
@@ -153,12 +165,14 @@ const CreateCustomerForm: FC = () => {
                     onConfirmPhone={onConfirmPhone}
                     onRemovePhone={onRemovePhone}
                     phoneList={phones}
+                    canAddContent={canEditForm}
                 />
 
                 <AddEmailComponent
                     emailList={emails}
                     onConfirmEmail={onConfirmEmail}
                     onRemoveEmail={onRemoveEmail}
+                    canAddContent={canEditForm}
                 />
             </div>
 
@@ -168,7 +182,10 @@ const CreateCustomerForm: FC = () => {
 
             <footer>
                 <Button type="button" variant="ghost" onClick={route.back}>Voltar</Button>
-                <Button type="submit" variant="success">Confirmar</Button>
+
+                {canEditForm && (
+                    <Button type="submit" variant="success">Confirmar</Button>
+                )}
             </footer>
         </form>
     );

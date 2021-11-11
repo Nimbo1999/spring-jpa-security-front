@@ -4,6 +4,7 @@ const API_ROUTES = {
     AUTH: '/auth',
     CUSTOMER: '/customer',
     COUNT: '/count',
+    USER: '/user',
     THIRD_PARTY: {
         VIACEP_URL: (cep: string) => `https://viacep.com.br/ws/${cep}/json/`
     },

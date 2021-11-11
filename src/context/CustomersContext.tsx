@@ -10,6 +10,7 @@ import HttpRequestError from '../exceptions/HttpRequestError';
 import CookieService from '../services/CookieService';
 import { useRouter } from 'next/router';
 import RouteConstants from '../constants/RoutesConstants';
+import User from '../models/User';
 
 const CustomerContext = createContext<CustomerContextProps>({
     page: 0,
@@ -21,11 +22,13 @@ const CustomerContext = createContext<CustomerContextProps>({
     onChangePage: null,
     onChangeRowsPerPage: null,
     onDeleteCustomer: null,
-    count: 0
+    count: 0,
+    user: null
 });
 
 const CustomerContextProvider: FC = ({ children }) => {
     const router = useRouter();
+    const [user, setUser] = useState<User>(null);
     const [customerList, setCustomerList] = useState<CustomerList>([]);
 
     const [count, setCount] = useState(0);
@@ -35,6 +38,26 @@ const CustomerContextProvider: FC = ({ children }) => {
 
     const [loading, setLoading] = useState(false);
 
+    const handleHttpRequestError = () => {
+        CookieService.deleteCookie();
+        router.replace(RouteConstants.HOME);
+    }
+
+    const getUserInfo = async () => {
+        const url = API_ROUTES.BASE_URL +
+            API_ROUTES.V1 +
+            API_ROUTES.USER;
+
+        try {
+            const response = await HttpService.get<User>(url);
+            setUser(response);
+        } catch(err) {
+            if (err instanceof HttpRequestError && err.payload) {
+                handleHttpRequestError();
+            }
+        }
+    }
+
     const getCustomerCount = async (): Promise<void> => {
         const url = API_ROUTES.BASE_URL +
             API_ROUTES.V1 +
@@ -43,15 +66,12 @@ const CustomerContextProvider: FC = ({ children }) => {
 
         try {
             const response = await HttpService.get<{ count: number }>(url);
-            console.log('Aquii1!!', response);
             setCount(response.count);
             setSize(10);
             setLoading(false);
         } catch(err) {
-            console.log({ err });
             if (err instanceof HttpRequestError && err.payload) {
-                CookieService.deleteCookie();
-                router.replace(RouteConstants.HOME);
+                handleHttpRequestError();
             }
         }
     }
@@ -75,8 +95,7 @@ const CustomerContextProvider: FC = ({ children }) => {
             }
         } catch (err) {
             if (err instanceof HttpRequestError && err.payload) {
-                CookieService.deleteCookie();
-                router.replace(RouteConstants.HOME);
+                handleHttpRequestError();
             }
         }
     }
@@ -102,9 +121,18 @@ const CustomerContextProvider: FC = ({ children }) => {
     }
 
     useEffect(() => {
-        getCustomerCount();
-        getCustomerList();
-    }, [page, size]);
+        const blacklistRoutes = [RouteConstants.HOME, RouteConstants.LOGIN];
+        if (!blacklistRoutes.includes(router.pathname)) {
+            getUserInfo();
+        }
+    }, [router.pathname]);
+
+    useEffect(() => {
+        if(router.pathname === RouteConstants.CUSTOMERS.ROOT) {
+            getCustomerCount();
+            getCustomerList();
+        }
+    }, [page, size, router.pathname]);
 
     return (
         <CustomerContext.Provider value={{
@@ -117,7 +145,8 @@ const CustomerContextProvider: FC = ({ children }) => {
             loading,
             onChangeRowsPerPage,
             onDeleteCustomer,
-            count
+            count,
+            user
         }}>
             {children}
         </CustomerContext.Provider>
